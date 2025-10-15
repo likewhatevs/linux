@@ -4592,9 +4592,6 @@ static int scx_enable(struct sched_ext_ops *ops, struct bpf_link *link)
 	 */
 	percpu_down_write(&scx_fork_rwsem);
 
-	WARN_ON_ONCE(scx_init_task_enabled);
-	scx_init_task_enabled = true;
-
 	/*
 	 * Enable ops for every task. Fork is excluded by scx_fork_rwsem
 	 * preventing new tasks from being added. No need to exclude tasks
@@ -4612,6 +4609,9 @@ static int scx_enable(struct sched_ext_ops *ops, struct bpf_link *link)
 	ret = scx_cgroup_init(sch);
 	if (ret)
 		goto err_disable_unlock_all;
+
+	WARN_ON_ONCE(scx_init_task_enabled);
+	scx_init_task_enabled = true;
 
 	scx_task_iter_start(&sti);
 	while ((p = scx_task_iter_next_locked(&sti))) {
