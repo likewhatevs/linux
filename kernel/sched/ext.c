@@ -4411,6 +4411,9 @@ static bool scx_claim_exit(struct scx_sched *sch, enum scx_exit_kind kind)
 	 * successfully reach scx_bypass().
 	 */
 	WRITE_ONCE(scx_aborting, true);
+
+	trace_sched_ext_exit(kind);
+
 	return true;
 }
 
